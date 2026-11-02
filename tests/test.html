@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gym Log tests</title>
+  <style>
+    body { font: 14px/1.5 ui-monospace, Consolas, monospace; margin: 16px; background: #fff; color: #1b1f27; }
+    @media (prefers-color-scheme: dark) { body { background: #12151b; color: #e7e9ee; } }
+    .fail { color: #e5524c; white-space: pre-wrap; }
+    .pass { color: #2a8a47; }
+    h1 { font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>Gym Log tests</h1>
+  <div id="out"></div>
+  <script type="module">
+    import { runTests } from './tests.js';
+    const out = document.getElementById('out');
+    const source = await fetch('../apps-script/Code.gs', { cache: 'no-store' }).then(r => r.text());
+    const { failed } = await runTests(source, line => {
+      const div = document.createElement('div');
+      div.className = line.startsWith('✗') ? 'fail' : line.startsWith('✓') ? 'pass' : '';
+      div.textContent = line;
+      out.append(div);
+    });
+    document.title = failed ? `✗ ${failed} failed` : '✓ All tests passed';
+  </script>
+</body>
+</html>
